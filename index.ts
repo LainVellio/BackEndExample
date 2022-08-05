@@ -5,6 +5,15 @@ const port = 3003;
 const jsonBodyMiddleware = express.json();
 app.use(jsonBodyMiddleware);
 
+const HTTP_STATUSES = {
+  OK_200: 200,
+  CREATED_201: 201,
+  NO_CONTENT_204: 204,
+
+  BAD_REQUEST_400: 400,
+  NOT_FOUND_404: 404,
+};
+
 let db = {
   courses: [
     { id: 1, title: "front-end" },
@@ -41,7 +50,7 @@ app.get("/courses", (req, res) => {
 app.get("/courses/:id", (req, res) => {
   const foundedCourse = db.courses.find((c) => c.id === +req.params.id);
   if (!foundedCourse) {
-    res.sendStatus(404);
+    res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
     return;
   }
   res.json(foundedCourse);
@@ -49,7 +58,7 @@ app.get("/courses/:id", (req, res) => {
 
 app.post("/courses", (req, res) => {
   if (!req.body.title) {
-    res.sendStatus(400);
+    res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400);
     return;
   }
 
@@ -58,7 +67,7 @@ app.post("/courses", (req, res) => {
     title: req.body.title,
   };
   db.courses.push(createdCourse);
-  res.status(201).json(createdCourse);
+  res.status(HTTP_STATUSES.CREATED_201).json(createdCourse);
 });
 
 app.delete("/courses/:id", (req, res) => {
@@ -68,22 +77,22 @@ app.delete("/courses/:id", (req, res) => {
 
 app.put("/courses/:id", (req, res) => {
   if (!req.body.title) {
-    res.sendStatus(400);
+    res.sendStatus(HTTP_STATUSES.BAD_REQUEST_400);
     return;
   }
 
   const foundedCourse = db.courses.find((c) => c.id === +req.params.id);
   if (!foundedCourse) {
-    res.sendStatus(404);
+    res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
     return;
   }
 
   foundedCourse.title = req.body.title;
-  res.status(204).json(foundedCourse);
+  res.status(HTTP_STATUSES.NO_CONTENT_204).json(foundedCourse);
 });
 
 app.get("/error", (req, res) => {
-  res.sendStatus(404);
+  res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
 });
 
 app.listen(port, () => {
