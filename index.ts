@@ -1,11 +1,11 @@
 import express from "express";
-const app = express();
+export const app = express();
 const port = 3003;
 
 const jsonBodyMiddleware = express.json();
 app.use(jsonBodyMiddleware);
 
-const HTTP_STATUSES = {
+export const HTTP_STATUSES = {
   OK_200: 200,
   CREATED_201: 201,
   NO_CONTENT_204: 204,
@@ -93,6 +93,11 @@ app.put("/courses/:id", (req, res) => {
 
 app.get("/error", (req, res) => {
   res.sendStatus(HTTP_STATUSES.NOT_FOUND_404);
+});
+
+app.delete("/__test__/data", (req, res) => {
+  db.courses = [];
+  res.sendStatus(HTTP_STATUSES.NO_CONTENT_204);
 });
 
 app.listen(port, () => {
